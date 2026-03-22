@@ -1,0 +1,2028 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>উম্মাহ হিসাব - মাদরাসা ব্যবস্থাপনা</title>
+<link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@300;400;500;600;700&family=Amiri:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --green: #1a6b3a;
+    --green-light: #2d8a52;
+    --green-dark: #0f4524;
+    --gold: #c9a84c;
+    --gold-light: #e8c96a;
+    --cream: #fdf8f0;
+    --white: #ffffff;
+    --text: #1a2e1a;
+    --text-light: #4a6b4a;
+    --border: #d4e8d4;
+    --red: #c0392b;
+    --red-light: #fadbd8;
+    --blue: #1a5276;
+    --blue-light: #d6eaf8;
+    --orange: #d35400;
+    --orange-light: #fde8d8;
+    --shadow: 0 4px 20px rgba(26,107,58,0.12);
+    --shadow-strong: 0 8px 32px rgba(26,107,58,0.2);
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    font-family: 'Hind Siliguri', sans-serif;
+    background: var(--cream);
+    color: var(--text);
+    min-height: 100vh;
+  }
+
+  /* TOP BAR */
+  .topbar {
+    background: linear-gradient(135deg, var(--green-dark) 0%, var(--green) 60%, var(--green-light) 100%);
+    padding: 0 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    box-shadow: var(--shadow-strong);
+    position: sticky; top: 0; z-index: 100;
+    min-height: 64px;
+  }
+  .topbar-logo {
+    display: flex; align-items: center; gap: 12px;
+  }
+  .logo-icon {
+    width: 44px; height: 44px;
+    background: var(--gold);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Amiri', serif;
+    font-size: 22px; color: var(--green-dark); font-weight: 700;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+  }
+  .logo-text { color: var(--white); }
+  .logo-text h1 { font-size: 20px; font-weight: 700; letter-spacing: 0.5px; }
+  .logo-text p { font-size: 11px; color: #b8e0c8; margin-top: -2px; }
+  .topbar-actions { display: flex; gap: 8px; align-items: center; }
+  .madrasa-name-display {
+    color: var(--gold-light); font-size: 13px; font-weight: 500;
+    background: rgba(255,255,255,0.1); padding: 4px 12px; border-radius: 20px;
+    cursor: pointer; transition: background 0.2s;
+  }
+  .madrasa-name-display:hover { background: rgba(255,255,255,0.2); }
+  .btn-share {
+    background: var(--gold); color: var(--green-dark);
+    border: none; padding: 8px 16px; border-radius: 20px;
+    font-family: 'Hind Siliguri', sans-serif; font-size: 13px; font-weight: 600;
+    cursor: pointer; display: flex; align-items: center; gap: 6px;
+    transition: all 0.2s;
+  }
+  .btn-share:hover { background: var(--gold-light); transform: translateY(-1px); }
+
+  /* NAV */
+  .nav {
+    background: var(--white);
+    border-bottom: 2px solid var(--border);
+    display: flex; overflow-x: auto; gap: 0;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    scrollbar-width: none;
+  }
+  .nav::-webkit-scrollbar { display: none; }
+  .nav-btn {
+    padding: 14px 18px;
+    border: none; background: none;
+    font-family: 'Hind Siliguri', sans-serif;
+    font-size: 13px; font-weight: 500; color: var(--text-light);
+    cursor: pointer; white-space: nowrap;
+    display: flex; align-items: center; gap: 6px;
+    border-bottom: 3px solid transparent;
+    transition: all 0.2s; flex-shrink: 0;
+  }
+  .nav-btn:hover { color: var(--green); background: #f0f9f4; }
+  .nav-btn.active { color: var(--green); border-bottom-color: var(--gold); font-weight: 700; }
+  .nav-btn .icon { font-size: 16px; }
+
+  /* MAIN */
+  .main { padding: 20px; max-width: 1100px; margin: 0 auto; }
+
+  /* SECTION */
+  .section { display: none; }
+  .section.active { display: block; }
+
+  /* CARD */
+  .card {
+    background: var(--white); border-radius: 16px;
+    box-shadow: var(--shadow); padding: 20px;
+    margin-bottom: 20px; border: 1px solid var(--border);
+  }
+  .card-header {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 16px; padding-bottom: 12px;
+    border-bottom: 2px solid var(--border);
+  }
+  .card-title {
+    font-size: 17px; font-weight: 700; color: var(--green-dark);
+    display: flex; align-items: center; gap: 8px;
+  }
+
+  /* SUMMARY CARDS */
+  .summary-grid {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 14px; margin-bottom: 20px;
+  }
+  .sum-card {
+    border-radius: 14px; padding: 16px;
+    display: flex; align-items: center; gap: 12px;
+    transition: transform 0.2s;
+  }
+  .sum-card:hover { transform: translateY(-2px); }
+  .sum-card.green { background: linear-gradient(135deg, #1a6b3a, #2d8a52); color: white; }
+  .sum-card.gold { background: linear-gradient(135deg, #9a6b10, #c9a84c); color: white; }
+  .sum-card.red { background: linear-gradient(135deg, #922b21, #c0392b); color: white; }
+  .sum-card.blue { background: linear-gradient(135deg, #1a5276, #2874a6); color: white; }
+  .sum-card.orange { background: linear-gradient(135deg, #a04000, #d35400); color: white; }
+  .sum-card.teal { background: linear-gradient(135deg, #0e6655, #17a589); color: white; }
+  .sum-icon { font-size: 28px; opacity: 0.9; }
+  .sum-info p { font-size: 11px; opacity: 0.85; margin-bottom: 4px; }
+  .sum-info h3 { font-size: 22px; font-weight: 700; }
+
+  /* TABLE */
+  .table-wrap { overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; font-size: 14px; }
+  th {
+    background: var(--green); color: white;
+    padding: 10px 12px; text-align: right; font-weight: 600;
+    font-size: 13px;
+  }
+  th:first-child { border-radius: 8px 0 0 0; }
+  th:last-child { border-radius: 0 8px 0 0; }
+  td { padding: 10px 12px; text-align: right; border-bottom: 1px solid #eef5ee; }
+  tr:hover td { background: #f5fcf7; }
+  .badge {
+    padding: 3px 10px; border-radius: 20px;
+    font-size: 11px; font-weight: 600; display: inline-block;
+  }
+  .badge-red { background: var(--red-light); color: var(--red); }
+  .badge-green { background: #d5f5e3; color: var(--green-dark); }
+  .badge-orange { background: var(--orange-light); color: var(--orange); }
+
+  /* BUTTONS */
+  .btn {
+    padding: 9px 18px; border-radius: 10px; border: none;
+    font-family: 'Hind Siliguri', sans-serif; font-size: 13px; font-weight: 600;
+    cursor: pointer; display: inline-flex; align-items: center; gap: 6px;
+    transition: all 0.2s;
+  }
+  .btn-primary { background: var(--green); color: white; }
+  .btn-primary:hover { background: var(--green-dark); }
+  .btn-gold { background: var(--gold); color: var(--green-dark); }
+  .btn-gold:hover { background: var(--gold-light); }
+  .btn-danger { background: var(--red); color: white; }
+  .btn-danger:hover { background: #922b21; }
+  .btn-sm { padding: 5px 12px; font-size: 12px; border-radius: 8px; }
+  .btn-outline {
+    background: none; border: 2px solid var(--green);
+    color: var(--green);
+  }
+  .btn-outline:hover { background: var(--green); color: white; }
+
+  /* FORM */
+  .form-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 14px; }
+  .form-group { display: flex; flex-direction: column; gap: 6px; }
+  .form-group label { font-size: 13px; font-weight: 600; color: var(--text-light); }
+  .form-group input, .form-group select, .form-group textarea {
+    padding: 10px 14px; border: 2px solid var(--border);
+    border-radius: 10px; font-family: 'Hind Siliguri', sans-serif;
+    font-size: 14px; color: var(--text);
+    transition: border 0.2s; outline: none;
+    background: var(--cream);
+  }
+  .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+    border-color: var(--green); background: white;
+  }
+  .form-group textarea { resize: vertical; min-height: 80px; }
+  .form-actions { display: flex; gap: 10px; margin-top: 14px; flex-wrap: wrap; }
+
+  /* MODAL */
+  .modal-overlay {
+    display: none; position: fixed; inset: 0;
+    background: rgba(0,0,0,0.55); z-index: 1000;
+    align-items: center; justify-content: center;
+    padding: 20px;
+  }
+  .modal-overlay.open { display: flex; }
+  .modal {
+    background: white; border-radius: 20px; padding: 28px;
+    max-width: 550px; width: 100%; max-height: 90vh; overflow-y: auto;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+    animation: slideUp 0.3s ease;
+  }
+  @keyframes slideUp { from { transform: translateY(30px); opacity:0; } to { transform: translateY(0); opacity:1; } }
+  .modal-header {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 20px;
+  }
+  .modal-title { font-size: 18px; font-weight: 700; color: var(--green-dark); }
+  .modal-close {
+    width: 32px; height: 32px; border-radius: 50%;
+    background: #f0f0f0; border: none; cursor: pointer;
+    font-size: 18px; display: flex; align-items: center; justify-content: center;
+    transition: background 0.2s;
+  }
+  .modal-close:hover { background: #e0e0e0; }
+
+  /* ALERT */
+  .alert {
+    padding: 12px 16px; border-radius: 10px; margin-bottom: 14px;
+    font-size: 13px; display: flex; align-items: center; gap: 8px;
+  }
+  .alert-success { background: #d5f5e3; color: #1a5c35; border-left: 4px solid var(--green); }
+  .alert-warning { background: #fef9e7; color: #7d6608; border-left: 4px solid #f1c40f; }
+  .alert-danger { background: var(--red-light); color: var(--red); border-left: 4px solid var(--red); }
+
+  /* NOTICE CARD */
+  .notice-item {
+    border-left: 4px solid var(--gold);
+    background: #fffdf5; padding: 14px 16px;
+    border-radius: 0 12px 12px 0; margin-bottom: 10px;
+  }
+  .notice-item h4 { font-size: 14px; font-weight: 700; color: var(--green-dark); margin-bottom: 4px; }
+  .notice-item p { font-size: 13px; color: var(--text-light); }
+  .notice-meta { font-size: 11px; color: #aaa; margin-top: 6px; }
+
+  /* SEARCH */
+  .search-bar {
+    display: flex; gap: 10px; margin-bottom: 16px; flex-wrap: wrap;
+    align-items: center;
+  }
+  .search-input {
+    flex: 1; min-width: 200px;
+    padding: 9px 14px; border: 2px solid var(--border);
+    border-radius: 10px; font-family: 'Hind Siliguri', sans-serif;
+    font-size: 14px; outline: none; transition: border 0.2s;
+  }
+  .search-input:focus { border-color: var(--green); }
+
+  /* SHARE PANEL */
+  .share-options {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 10px; margin-top: 14px;
+  }
+  .share-btn {
+    padding: 12px; border-radius: 12px; border: 2px solid var(--border);
+    background: white; cursor: pointer; text-align: center;
+    font-family: 'Hind Siliguri', sans-serif; font-size: 13px; font-weight: 600;
+    transition: all 0.2s; display: flex; flex-direction: column; align-items: center; gap: 6px;
+  }
+  .share-btn:hover { border-color: var(--green); background: #f0f9f4; transform: translateY(-2px); }
+  .share-btn span { font-size: 24px; }
+
+  /* DASHBOARD WELCOME */
+  .welcome-banner {
+    background: linear-gradient(135deg, var(--green-dark), var(--green), #4caf80);
+    border-radius: 16px; padding: 24px 28px; color: white; margin-bottom: 20px;
+    display: flex; justify-content: space-between; align-items: center;
+    box-shadow: var(--shadow-strong); position: relative; overflow: hidden;
+  }
+  .welcome-banner::after {
+    content: '☽'; font-size: 120px; position: absolute; right: 20px; top: -20px;
+    opacity: 0.08; font-family: 'Amiri', serif;
+  }
+  .welcome-banner h2 { font-size: 22px; font-weight: 700; margin-bottom: 6px; }
+  .welcome-banner p { font-size: 13px; opacity: 0.85; }
+  .welcome-date { text-align: right; }
+  .welcome-date p { font-size: 12px; opacity: 0.75; }
+  .welcome-date h3 { font-size: 16px; font-weight: 700; }
+
+  /* MONTH TABS */
+  .month-tabs { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 16px; }
+  .month-tab {
+    padding: 6px 14px; border-radius: 20px;
+    border: 2px solid var(--border); background: white;
+    font-family: 'Hind Siliguri', sans-serif; font-size: 12px; font-weight: 600;
+    cursor: pointer; color: var(--text-light); transition: all 0.2s;
+  }
+  .month-tab.active, .month-tab:hover {
+    background: var(--green); color: white; border-color: var(--green);
+  }
+
+  /* PRINT */
+  @media print {
+    .topbar, .nav, .btn, .form-group, .search-bar,
+    .card-header button, .modal-overlay { display: none !important; }
+    .section { display: block !important; }
+    body { background: white; }
+  }
+
+  /* RESPONSIVE */
+  @media (max-width: 600px) {
+    .main { padding: 12px; }
+    .welcome-banner { flex-direction: column; gap: 12px; }
+    .welcome-banner::after { display: none; }
+    .summary-grid { grid-template-columns: 1fr 1fr; }
+    .form-grid { grid-template-columns: 1fr; }
+  }
+
+  /* ARABIIC BISMILLAH */
+  .bismillah {
+    text-align: center; font-family: 'Amiri', serif;
+    font-size: 24px; color: var(--gold); margin-bottom: 8px;
+    letter-spacing: 2px;
+  }
+
+  .empty-state {
+    text-align: center; padding: 40px 20px; color: var(--text-light);
+  }
+  .empty-state span { font-size: 48px; display: block; margin-bottom: 10px; }
+
+  .status-dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    display: inline-block; margin-left: 4px;
+  }
+  .dot-green { background: var(--green); }
+  .dot-red { background: var(--red); }
+  .dot-orange { background: var(--orange); }
+
+  /* INCOME EXPENSE */
+  .ie-row { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid var(--border); }
+  .ie-row:last-child { border-bottom: none; }
+  .ie-label { font-size: 14px; color: var(--text); }
+  .ie-amount { font-size: 16px; font-weight: 700; }
+  .ie-green { color: var(--green); }
+  .ie-red { color: var(--red); }
+
+  /* LOGIN SCREEN */
+  #loginScreen {
+    display: none; position: fixed; inset: 0; z-index: 9999;
+    background: linear-gradient(135deg, var(--green-dark) 0%, #0a3018 40%, #1a4a2a 100%);
+    align-items: center; justify-content: center; flex-direction: column;
+  }
+  #loginScreen.show { display: flex; }
+  .login-box {
+    background: white; border-radius: 24px; padding: 40px 36px;
+    max-width: 420px; width: 100%; box-shadow: 0 24px 80px rgba(0,0,0,0.4);
+    animation: slideUp 0.4s cubic-bezier(.17,.67,.35,1.1);
+    position: relative; overflow: hidden;
+  }
+  .login-box::before {
+    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 6px;
+    background: linear-gradient(90deg, var(--green-dark), var(--gold), var(--green));
+  }
+  .login-logo {
+    text-align: center; margin-bottom: 28px;
+  }
+  .login-logo .big-icon {
+    width: 72px; height: 72px; background: linear-gradient(135deg, var(--green-dark), var(--green));
+    border-radius: 50%; margin: 0 auto 12px;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Amiri', serif; font-size: 32px; color: var(--gold);
+    box-shadow: 0 8px 24px rgba(26,107,58,0.35);
+  }
+  .login-logo h2 { font-size: 22px; font-weight: 800; color: var(--green-dark); }
+  .login-logo p { font-size: 12px; color: var(--text-light); margin-top: 2px; }
+  .login-bismillah {
+    text-align: center; font-family: 'Amiri', serif; font-size: 18px;
+    color: var(--gold); margin-bottom: 24px; letter-spacing: 1px;
+  }
+  .pw-input-wrap {
+    position: relative;
+  }
+  .pw-input-wrap input {
+    padding-right: 44px !important;
+  }
+  .pw-toggle {
+    position: absolute; right: 12px; top: 50%; transform: translateY(-50%);
+    background: none; border: none; cursor: pointer; font-size: 18px;
+    color: var(--text-light); padding: 4px;
+  }
+  .login-error {
+    background: var(--red-light); color: var(--red);
+    border-left: 4px solid var(--red);
+    padding: 10px 14px; border-radius: 8px;
+    font-size: 13px; margin-bottom: 14px; display: none;
+    align-items: center; gap: 8px;
+  }
+  .login-error.show { display: flex; }
+  .login-hint {
+    background: #f0fdf4; border-left: 4px solid var(--green);
+    padding: 10px 14px; border-radius: 8px;
+    font-size: 12px; color: var(--text-light); margin-top: 14px;
+  }
+  .lock-bar {
+    display: flex; align-items: center; gap: 8px;
+    background: rgba(255,255,255,0.12); padding: 6px 14px;
+    border-radius: 20px; cursor: pointer; transition: background 0.2s;
+    color: var(--gold-light); font-size: 13px; font-weight: 500;
+  }
+  .lock-bar:hover { background: rgba(255,255,255,0.2); }
+
+  /* PASSWORD STRENGTH */
+  .pw-strength { margin-top: 6px; }
+  .pw-strength-bar {
+    height: 4px; border-radius: 4px; background: #eee;
+    overflow: hidden; margin-bottom: 4px;
+  }
+  .pw-strength-fill {
+    height: 100%; border-radius: 4px; transition: all 0.3s;
+    width: 0;
+  }
+  .pw-strength-label { font-size: 11px; color: var(--text-light); }
+
+  /* LOCKED OVERLAY for restricted sections */
+  .section-lock {
+    display: none; position: absolute; inset: 0; z-index: 50;
+    background: rgba(255,255,255,0.92); border-radius: 16px;
+    align-items: center; justify-content: center; flex-direction: column;
+    gap: 12px; text-align: center;
+  }
+  .section-lock.locked { display: flex; }
+  .card { position: relative; }
+</style>
+</head>
+<body>
+
+<!-- ====== LOGIN SCREEN ====== -->
+<div id="loginScreen" class="show">
+  <div class="login-box">
+    <div class="login-bismillah">بِسْمِ اللهِ الرَّحْمٰنِ الرَّحِيْمِ</div>
+    <div class="login-logo">
+      <div class="big-icon">উ</div>
+      <h2>উম্মাহ হিসাব</h2>
+      <p>মাদরাসা ব্যবস্থাপনা সিস্টেম</p>
+    </div>
+    <div id="loginError" class="login-error">🔒 পাসওয়ার্ড ভুল হয়েছে! আবার চেষ্টা করুন।</div>
+    <div class="form-group" style="margin-bottom:14px;">
+      <label>🔐 এডমিন পাসওয়ার্ড</label>
+      <div class="pw-input-wrap">
+        <input id="loginPwInput" type="password" class="search-input" style="width:100%;"
+          placeholder="পাসওয়ার্ড লিখুন..."
+          onkeydown="if(event.key==='Enter')doLogin()">
+        <button class="pw-toggle" onclick="togglePwVis('loginPwInput',this)">👁️</button>
+      </div>
+    </div>
+    <button class="btn btn-primary" style="width:100%;padding:13px;font-size:15px;border-radius:12px;" onclick="doLogin()">
+      🔓 লগইন করুন
+    </button>
+    <div class="login-hint">
+      💡 প্রথমবার ব্যবহারে ডিফল্ট পাসওয়ার্ড: <strong>admin123</strong>
+    </div>
+  </div>
+</div>
+
+<!-- ====== APP WRAPPER ====== -->
+<div id="appWrapper" style="display:none;">
+
+<!-- TOP BAR -->
+<div class="topbar">
+  <div class="topbar-logo">
+    <div class="logo-icon">উ</div>
+    <div class="logo-text">
+      <h1>উম্মাহ হিসাব</h1>
+      <p>মাদরাসা ব্যবস্থাপনা সিস্টেম</p>
+    </div>
+  </div>
+  <div class="topbar-actions">
+    <div class="madrasa-name-display" onclick="openMadrasaEdit()">🏫 <span id="madrasaNameDisplay">মাদরাসার নাম সেট করুন</span></div>
+    <div class="lock-bar" onclick="doLogout()" title="লগআউট">🔒 লগআউট</div>
+    <button class="btn-share" onclick="openShare()">📤 শেয়ার</button>
+  </div>
+</div>
+
+<!-- NAV -->
+<div class="nav">
+  <button class="nav-btn active" onclick="showSection('dashboard')"><span class="icon">🏠</span> ড্যাশবোর্ড</button>
+  <button class="nav-btn" onclick="showSection('students')"><span class="icon">👩‍🎓</span> ছাত্র-ছাত্রী</button>
+  <button class="nav-btn" onclick="showSection('fees')"><span class="icon">💰</span> বেতন ও বকেয়া</button>
+  <button class="nav-btn" onclick="showSection('teachers')"><span class="icon">👨‍🏫</span> শিক্ষক (NID)</button>
+  <button class="nav-btn" onclick="showSection('meetings')"><span class="icon">📋</span> মিটিং নোটিশ</button>
+  <button class="nav-btn" onclick="showSection('income')"><span class="icon">📈</span> আয়-ব্যায়</button>
+  <button class="nav-btn" onclick="showSection('annual')"><span class="icon">📊</span> বার্ষিক রিপোর্ট</button>
+  <button class="nav-btn" onclick="showSection('settings')"><span class="icon">⚙️</span> সেটিংস</button>
+</div>
+
+<!-- MAIN -->
+<div class="main">
+
+<!-- ============ DASHBOARD ============ -->
+<div id="dashboard" class="section active">
+  <div class="bismillah">بِسْمِ اللهِ الرَّحْمٰنِ الرَّحِيْمِ</div>
+  <div class="welcome-banner">
+    <div>
+      <h2 id="madrasaWelcomeName">স্বাগতম, উম্মাহ হিসাব-এ</h2>
+      <p>আপনার মাদরাসার সম্পূর্ণ হিসাব এখানে পরিচালনা করুন</p>
+    </div>
+    <div class="welcome-date">
+      <p id="currentDateBn"></p>
+      <h3 id="currentTimeBn"></h3>
+    </div>
+  </div>
+
+  <div class="summary-grid" id="dashSummary">
+    <!-- filled by JS -->
+  </div>
+
+  <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px; flex-wrap:wrap;">
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">⚠️ বকেয়া সতর্কতা</div>
+      </div>
+      <div id="overdueAlert"></div>
+    </div>
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">💵 নগদ অবস্থান</div>
+      </div>
+      <div id="cashStatus"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ STUDENTS ============ -->
+<div id="students" class="section">
+  <div class="card">
+    <div class="card-header">
+      <div class="card-title">👩‍🎓 ছাত্র-ছাত্রী তালিকা</div>
+      <button class="btn btn-primary" onclick="openStudentModal()">+ নতুন ছাত্র/ছাত্রী</button>
+    </div>
+    <div class="search-bar">
+      <input class="search-input" type="text" placeholder="🔍 নাম বা আইডি দিয়ে খুঁজুন..." oninput="filterStudents(this.value)">
+      <select class="form-group select" style="padding:9px 14px;border:2px solid var(--border);border-radius:10px;font-family:'Hind Siliguri',sans-serif;font-size:14px;" onchange="filterStudentClass(this.value)">
+        <option value="">সকল শ্রেণী</option>
+      </select>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>আইডি</th><th>নাম</th><th>শ্রেণী</th><th>অভিভাবক</th><th>মোবাইল</th><th>মাসিক বেতন</th><th>অ্যাকশন</th>
+          </tr>
+        </thead>
+        <tbody id="studentsTableBody"></tbody>
+      </table>
+      <div id="studentsEmpty" class="empty-state" style="display:none;"><span>📚</span>কোনো ছাত্র-ছাত্রী যোগ করা হয়নি</div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ FEES ============ -->
+<div id="fees" class="section">
+  <div class="card">
+    <div class="card-header">
+      <div class="card-title">💰 বেতন সংগ্রহ ও বকেয়া</div>
+      <button class="btn btn-primary" onclick="openFeeModal()">+ বেতন যোগ করুন</button>
+    </div>
+    <div class="month-tabs" id="feeMonthTabs"></div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>ছাত্রের নাম</th><th>শ্রেণী</th><th>মাস</th><th>বেতন পরিমাণ</th><th>পরিশোধ</th><th>বকেয়া</th><th>স্ট্যাটাস</th><th>অ্যাকশন</th>
+          </tr>
+        </thead>
+        <tbody id="feesTableBody"></tbody>
+      </table>
+      <div id="feesEmpty" class="empty-state" style="display:none;"><span>💸</span>কোনো বেতন রেকর্ড নেই</div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ TEACHERS ============ -->
+<div id="teachers" class="section">
+  <div class="card">
+    <div class="card-header">
+      <div class="card-title">👨‍🏫 শিক্ষক তালিকা (NID সহ)</div>
+      <button class="btn btn-primary" onclick="openTeacherModal()">+ নতুন শিক্ষক</button>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>নাম</th><th>বিষয়</th><th>মোবাইল</th><th>NID নম্বর</th><th>বেতন</th><th>যোগদান</th><th>অ্যাকশন</th>
+          </tr>
+        </thead>
+        <tbody id="teachersTableBody"></tbody>
+      </table>
+      <div id="teachersEmpty" class="empty-state" style="display:none;"><span>👨‍🏫</span>কোনো শিক্ষক যোগ করা হয়নি</div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ MEETINGS ============ -->
+<div id="meetings" class="section">
+  <div class="card">
+    <div class="card-header">
+      <div class="card-title">📋 মিটিং নোটিশ</div>
+      <button class="btn btn-primary" onclick="openMeetingModal()">+ নতুন নোটিশ</button>
+    </div>
+    <div id="meetingsList"></div>
+    <div id="meetingsEmpty" class="empty-state" style="display:none;"><span>📋</span>কোনো নোটিশ নেই</div>
+  </div>
+</div>
+
+<!-- ============ INCOME/EXPENSE ============ -->
+<div id="income" class="section">
+  <div class="card">
+    <div class="card-header">
+      <div class="card-title">📈 আয় ও ব্যায় ব্যবস্থাপনা</div>
+      <div style="display:flex;gap:8px;">
+        <button class="btn btn-primary" onclick="openIncomeModal('income')">+ আয় যোগ</button>
+        <button class="btn btn-danger" onclick="openIncomeModal('expense')">+ ব্যায় যোগ</button>
+      </div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-bottom:20px;" id="ieCards"></div>
+
+    <div class="month-tabs" id="incomeMonthTabs"></div>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>তারিখ</th><th>বিবরণ</th><th>ক্যাটাগরি</th><th>আয়</th><th>ব্যায়</th><th>মাস</th><th>অ্যাকশন</th></tr>
+        </thead>
+        <tbody id="incomeTableBody"></tbody>
+      </table>
+      <div id="incomeEmpty" class="empty-state" style="display:none;"><span>📊</span>কোনো লেনদেন নেই</div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ ANNUAL ============ -->
+<div id="annual" class="section">
+  <div class="card">
+    <div class="card-header">
+      <div class="card-title">📊 বার্ষিক রিপোর্ট</div>
+      <button class="btn btn-gold" onclick="printReport()">🖨️ প্রিন্ট / PDF</button>
+    </div>
+    <div id="annualReport"></div>
+  </div>
+</div>
+
+<!-- ============ SETTINGS ============ -->
+<div id="settings" class="section">
+
+  <!-- Madrasa Info Card -->
+  <div class="card">
+    <div class="card-header">
+      <div class="card-title">🏫 মাদরাসার তথ্য এডিট করুন</div>
+      <button class="btn btn-primary" onclick="saveSettingsMadrasa()">✅ সংরক্ষণ করুন</button>
+    </div>
+    <div id="settingsSaveAlert" style="display:none;" class="alert alert-success">✅ সফলভাবে সংরক্ষণ হয়েছে!</div>
+    <div class="form-grid">
+      <div class="form-group" style="grid-column:1/-1">
+        <label>🏫 মাদরাসার নাম *</label>
+        <input id="sMadrasaName" type="text" placeholder="যেমন: দারুল উলুম মাদরাসা">
+      </div>
+      <div class="form-group">
+        <label>📍 ঠিকানা</label>
+        <input id="sMadrasaAddress" type="text" placeholder="গ্রাম/থানা/জেলা">
+      </div>
+      <div class="form-group">
+        <label>📞 মোবাইল নম্বর</label>
+        <input id="sMadrasaPhone" type="text" placeholder="01XXXXXXXXX">
+      </div>
+      <div class="form-group">
+        <label>👤 মুহতামিম / প্রধান শিক্ষক</label>
+        <input id="sMadrasaHead" type="text" placeholder="নাম লিখুন">
+      </div>
+      <div class="form-group">
+        <label>✉️ ইমেইল</label>
+        <input id="sMadrasaEmail" type="email" placeholder="email@example.com">
+      </div>
+      <div class="form-group">
+        <label>📅 প্রতিষ্ঠার বছর</label>
+        <input id="sMadrasaYear" type="number" placeholder="যেমন: 2000">
+      </div>
+      <div class="form-group" style="grid-column:1/-1">
+        <label>📝 মাদরাসার সংক্ষিপ্ত বিবরণ</label>
+        <textarea id="sMadrasaDesc" placeholder="মাদরাসার সম্পর্কে কিছু লিখুন..."></textarea>
+      </div>
+    </div>
+  </div>
+
+  <!-- Preview Card -->
+  <div class="card">
+    <div class="card-header">
+      <div class="card-title">👁️ প্রিভিউ</div>
+    </div>
+    <div id="madrasaPreview" style="background:linear-gradient(135deg,var(--green-dark),var(--green));border-radius:14px;padding:24px;color:white;text-align:center;">
+      <div style="font-family:'Amiri',serif;font-size:22px;margin-bottom:8px;color:var(--gold-light);">بِسْمِ اللهِ الرَّحْمٰنِ الرَّحِيْمِ</div>
+      <h2 id="prevName" style="font-size:22px;font-weight:800;margin-bottom:6px;">—</h2>
+      <p id="prevAddress" style="font-size:13px;opacity:0.85;"></p>
+      <p id="prevPhone" style="font-size:13px;opacity:0.75;margin-top:4px;"></p>
+      <p id="prevHead" style="font-size:12px;opacity:0.7;margin-top:4px;"></p>
+    </div>
+  </div>
+
+  <!-- App Settings Card -->
+  <div class="card">
+    <div class="card-header">
+      <div class="card-title">⚙️ অ্যাপ সেটিংস</div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+      <div class="card" style="margin:0;border:2px solid var(--border);">
+        <div style="font-size:14px;font-weight:700;color:var(--green-dark);margin-bottom:10px;">🎨 থিম রঙ</div>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;">
+          <button onclick="changeTheme('#1a6b3a','#0f4524')" style="width:32px;height:32px;background:#1a6b3a;border-radius:50%;border:3px solid #fff;box-shadow:0 2px 6px rgba(0,0,0,0.3);cursor:pointer;" title="সবুজ"></button>
+          <button onclick="changeTheme('#1a5276','#0d3554')" style="width:32px;height:32px;background:#1a5276;border-radius:50%;border:3px solid #fff;box-shadow:0 2px 6px rgba(0,0,0,0.3);cursor:pointer;" title="নীল"></button>
+          <button onclick="changeTheme('#6c3483','#4a235a')" style="width:32px;height:32px;background:#6c3483;border-radius:50%;border:3px solid #fff;box-shadow:0 2px 6px rgba(0,0,0,0.3);cursor:pointer;" title="বেগুনি"></button>
+          <button onclick="changeTheme('#784212','#4a2800')" style="width:32px;height:32px;background:#784212;border-radius:50%;border:3px solid #fff;box-shadow:0 2px 6px rgba(0,0,0,0.3);cursor:pointer;" title="বাদামি"></button>
+          <button onclick="changeTheme('#0e6655','#07443d')" style="width:32px;height:32px;background:#0e6655;border-radius:50%;border:3px solid #fff;box-shadow:0 2px 6px rgba(0,0,0,0.3);cursor:pointer;" title="টিল"></button>
+        </div>
+      </div>
+      <div class="card" style="margin:0;border:2px solid var(--border);">
+        <div style="font-size:14px;font-weight:700;color:var(--green-dark);margin-bottom:10px;">🔠 ফন্ট সাইজ</div>
+        <div style="display:flex;gap:8px;align-items:center;">
+          <button class="btn btn-outline btn-sm" onclick="changeFontSize(12)">ছোট</button>
+          <button class="btn btn-outline btn-sm" onclick="changeFontSize(14)">মাঝারি</button>
+          <button class="btn btn-outline btn-sm" onclick="changeFontSize(16)">বড়</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Danger Zone -->
+  <div class="card" style="border:2px solid #fadbd8;">
+    <div class="card-header">
+      <div class="card-title" style="color:var(--red);">⚠️ ডেটা ব্যবস্থাপনা</div>
+    </div>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;">
+      <button class="btn btn-primary" onclick="shareData()">💾 ডেটা ব্যাকআপ</button>
+      <button class="btn btn-outline" onclick="restoreData()">♻️ ডেটা রিস্টোর</button>
+      <button class="btn btn-danger" onclick="confirmClearAll()">🗑️ সব ডেটা মুছুন</button>
+    </div>
+    <p style="font-size:12px;color:var(--text-light);margin-top:10px;">⚠️ সব ডেটা মুছলে পুনরুদ্ধার করা যাবে না। আগে ব্যাকআপ নিন।</p>
+  </div>
+
+  <!-- App Info -->
+  <div class="card" style="text-align:center;background:linear-gradient(135deg,#f0fdf4,#e8f8f0);">
+    <div style="font-family:'Amiri',serif;font-size:28px;color:var(--gold);margin-bottom:8px;">উম্মাহ হিসাব</div>
+    <p style="font-size:13px;color:var(--text-light);">মাদরাসা ব্যবস্থাপনা সফটওয়্যার</p>
+    <p style="font-size:11px;color:#aaa;margin-top:6px;">সংস্করণ ১.০ | সমস্ত তথ্য আপনার ডিভাইসে সুরক্ষিত</p>
+  </div>
+
+  <!-- Password Management Card -->
+  <div class="card" style="border:2px solid #d6eaf8;">
+    <div class="card-header">
+      <div class="card-title" style="color:var(--blue);">🔐 পাসওয়ার্ড পরিবর্তন</div>
+    </div>
+    <div id="pwChangeAlert" class="alert" style="display:none;"></div>
+    <div class="form-grid">
+      <div class="form-group">
+        <label>বর্তমান পাসওয়ার্ড</label>
+        <div class="pw-input-wrap">
+          <input id="curPwInput" type="password" placeholder="বর্তমান পাসওয়ার্ড">
+          <button class="pw-toggle" onclick="togglePwVis('curPwInput',this)">👁️</button>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>নতুন পাসওয়ার্ড</label>
+        <div class="pw-input-wrap">
+          <input id="newPwInput" type="password" placeholder="নতুন পাসওয়ার্ড" oninput="checkPwStrength(this.value)">
+          <button class="pw-toggle" onclick="togglePwVis('newPwInput',this)">👁️</button>
+        </div>
+        <div class="pw-strength">
+          <div class="pw-strength-bar"><div id="pwStrengthFill" class="pw-strength-fill"></div></div>
+          <div id="pwStrengthLabel" class="pw-strength-label">পাসওয়ার্ড লিখুন</div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>নতুন পাসওয়ার্ড নিশ্চিত করুন</label>
+        <div class="pw-input-wrap">
+          <input id="confirmPwInput" type="password" placeholder="আবার লিখুন">
+          <button class="pw-toggle" onclick="togglePwVis('confirmPwInput',this)">👁️</button>
+        </div>
+      </div>
+    </div>
+    <div class="form-actions" style="margin-top:16px;">
+      <button class="btn btn-primary" onclick="changePassword()">🔐 পাসওয়ার্ড পরিবর্তন করুন</button>
+      <button class="btn btn-danger" onclick="doLogout()">🚪 এখনই লগআউট</button>
+    </div>
+    <div class="login-hint" style="margin-top:14px;">
+      🔒 পাসওয়ার্ড কমপক্ষে ৬ অক্ষরের হতে হবে। শক্তিশালী পাসওয়ার্ড ব্যবহার করুন।
+    </div>
+  </div>
+
+</div>
+
+</div><!-- end main -->
+</div><!-- end appWrapper -->
+
+<!-- ====== MODALS ====== -->
+
+<!-- LOGOUT CONFIRM -->
+<div class="modal-overlay" id="logoutModal">
+  <div class="modal" style="max-width:380px;">
+    <div class="modal-header">
+      <div class="modal-title">🚪 লগআউট করবেন?</div>
+      <button class="modal-close" onclick="closeModal('logoutModal')">✕</button>
+    </div>
+    <p style="margin-bottom:20px;color:var(--text-light);font-size:14px;">লগআউট করলে আবার পাসওয়ার্ড দিয়ে প্রবেশ করতে হবে।</p>
+    <div class="form-actions">
+      <button class="btn btn-danger" onclick="confirmLogout()">🚪 হ্যাঁ, লগআউট</button>
+      <button class="btn btn-outline" onclick="closeModal('logoutModal')">না, থাকুন</button>
+    </div>
+  </div>
+</div>
+
+<!-- CLEAR ALL CONFIRM -->
+<div class="modal-overlay" id="clearAllModal">
+  <div class="modal" style="max-width:400px;">
+    <div class="modal-header">
+      <div class="modal-title" style="color:var(--red);">⚠️ সব ডেটা মুছবেন?</div>
+      <button class="modal-close" onclick="closeModal('clearAllModal')">✕</button>
+    </div>
+    <div class="alert alert-danger">এই কাজটি করলে সমস্ত ছাত্র, শিক্ষক, বেতন, আয়-ব্যায় সব তথ্য চিরতরে মুছে যাবে!</div>
+    <p style="margin-bottom:16px;font-size:14px;color:var(--text-light);">নিশ্চিত করতে নিচে <strong>"মুছুন"</strong> লিখুন:</p>
+    <input id="clearConfirmInput" type="text" class="search-input" style="width:100%;margin-bottom:14px;" placeholder='এখানে "মুছুন" লিখুন'>
+    <div class="form-actions">
+      <button class="btn btn-danger" onclick="doClearAll()">🗑️ সব মুছুন</button>
+      <button class="btn btn-outline" onclick="closeModal('clearAllModal')">বাতিল</button>
+    </div>
+  </div>
+</div>
+
+<!-- MADRASA EDIT (topbar click) -->
+<div class="modal-overlay" id="madrasaModal">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">🏫 মাদরাসার তথ্য সম্পাদনা</div>
+      <button class="modal-close" onclick="closeModal('madrasaModal')">✕</button>
+    </div>
+    <div class="alert alert-success" style="margin-bottom:12px;">💡 সেটিংস পেজে গিয়েও বিস্তারিত তথ্য এডিট করতে পারবেন।</div>
+    <div class="form-grid">
+      <div class="form-group" style="grid-column:1/-1">
+        <label>মাদরাসার নাম *</label>
+        <input id="mName" type="text" placeholder="যেমন: দারুল উলুম মাদরাসা">
+      </div>
+      <div class="form-group">
+        <label>ঠিকানা</label>
+        <input id="mAddress" type="text" placeholder="গ্রাম/থানা/জেলা">
+      </div>
+      <div class="form-group">
+        <label>মোবাইল</label>
+        <input id="mPhone" type="text" placeholder="01XXXXXXXXX">
+      </div>
+      <div class="form-group">
+        <label>প্রতিষ্ঠাতা/মুহতামিম</label>
+        <input id="mHead" type="text" placeholder="নাম লিখুন">
+      </div>
+      <div class="form-group">
+        <label>ইমেইল (ঐচ্ছিক)</label>
+        <input id="mEmail" type="email" placeholder="email@example.com">
+      </div>
+    </div>
+    <div class="form-actions">
+      <button class="btn btn-primary" onclick="saveMadrasa()">✅ সংরক্ষণ করুন</button>
+      <button class="btn btn-outline" onclick="closeModal('madrasaModal')">বাতিল</button>
+    </div>
+  </div>
+</div>
+
+<!-- STUDENT MODAL -->
+<div class="modal-overlay" id="studentModal">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title" id="studentModalTitle">নতুন ছাত্র/ছাত্রী যোগ করুন</div>
+      <button class="modal-close" onclick="closeModal('studentModal')">✕</button>
+    </div>
+    <input type="hidden" id="studentEditId">
+    <div class="form-grid">
+      <div class="form-group">
+        <label>পূর্ণ নাম *</label>
+        <input id="sName" type="text" placeholder="ছাত্রের নাম">
+      </div>
+      <div class="form-group">
+        <label>লিঙ্গ</label>
+        <select id="sGender"><option>ছাত্র</option><option>ছাত্রী</option></select>
+      </div>
+      <div class="form-group">
+        <label>শ্রেণী *</label>
+        <input id="sClass" type="text" placeholder="যেমন: হিফজ, কিতাব ১ম">
+      </div>
+      <div class="form-group">
+        <label>মাসিক বেতন (টাকা) *</label>
+        <input id="sFee" type="number" placeholder="500">
+      </div>
+      <div class="form-group">
+        <label>অভিভাবকের নাম</label>
+        <input id="sGuardian" type="text" placeholder="পিতা/মাতার নাম">
+      </div>
+      <div class="form-group">
+        <label>মোবাইল নম্বর</label>
+        <input id="sPhone" type="text" placeholder="01XXXXXXXXX">
+      </div>
+      <div class="form-group">
+        <label>ভর্তির তারিখ</label>
+        <input id="sJoin" type="date">
+      </div>
+      <div class="form-group">
+        <label>ঠিকানা</label>
+        <input id="sAddress" type="text" placeholder="গ্রাম/জেলা">
+      </div>
+    </div>
+    <div class="form-actions">
+      <button class="btn btn-primary" onclick="saveStudent()">✅ সংরক্ষণ</button>
+      <button class="btn btn-outline" onclick="closeModal('studentModal')">বাতিল</button>
+    </div>
+  </div>
+</div>
+
+<!-- FEE MODAL -->
+<div class="modal-overlay" id="feeModal">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title" id="feeModalTitle">বেতন রেকর্ড করুন</div>
+      <button class="modal-close" onclick="closeModal('feeModal')">✕</button>
+    </div>
+    <input type="hidden" id="feeEditId">
+    <div class="form-grid">
+      <div class="form-group">
+        <label>ছাত্র নির্বাচন *</label>
+        <select id="fStudent"></select>
+      </div>
+      <div class="form-group">
+        <label>মাস *</label>
+        <select id="fMonth">
+          <option value="জানুয়ারি">জানুয়ারি</option><option value="ফেব্রুয়ারি">ফেব্রুয়ারি</option>
+          <option value="মার্চ">মার্চ</option><option value="এপ্রিল">এপ্রিল</option>
+          <option value="মে">মে</option><option value="জুন">জুন</option>
+          <option value="জুলাই">জুলাই</option><option value="আগস্ট">আগস্ট</option>
+          <option value="সেপ্টেম্বর">সেপ্টেম্বর</option><option value="অক্টোবর">অক্টোবর</option>
+          <option value="নভেম্বর">নভেম্বর</option><option value="ডিসেম্বর">ডিসেম্বর</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>বছর</label>
+        <input id="fYear" type="number" placeholder="2025">
+      </div>
+      <div class="form-group">
+        <label>মোট বেতন (টাকা)</label>
+        <input id="fAmount" type="number" placeholder="500">
+      </div>
+      <div class="form-group">
+        <label>পরিশোধিত (টাকা)</label>
+        <input id="fPaid" type="number" placeholder="500">
+      </div>
+      <div class="form-group">
+        <label>পরিশোধের তারিখ</label>
+        <input id="fDate" type="date">
+      </div>
+      <div class="form-group" style="grid-column:1/-1">
+        <label>মন্তব্য</label>
+        <textarea id="fNote" placeholder="যেকোনো মন্তব্য..."></textarea>
+      </div>
+    </div>
+    <div class="form-actions">
+      <button class="btn btn-primary" onclick="saveFee()">✅ সংরক্ষণ</button>
+      <button class="btn btn-outline" onclick="closeModal('feeModal')">বাতিল</button>
+    </div>
+  </div>
+</div>
+
+<!-- TEACHER MODAL -->
+<div class="modal-overlay" id="teacherModal">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title" id="teacherModalTitle">নতুন শিক্ষক যোগ করুন</div>
+      <button class="modal-close" onclick="closeModal('teacherModal')">✕</button>
+    </div>
+    <input type="hidden" id="teacherEditId">
+    <div class="form-grid">
+      <div class="form-group">
+        <label>পূর্ণ নাম *</label>
+        <input id="tName" type="text" placeholder="শিক্ষকের নাম">
+      </div>
+      <div class="form-group">
+        <label>বিষয় / পদবী</label>
+        <input id="tSubject" type="text" placeholder="যেমন: হাদিস, কুরআন">
+      </div>
+      <div class="form-group">
+        <label>মোবাইল নম্বর</label>
+        <input id="tPhone" type="text" placeholder="01XXXXXXXXX">
+      </div>
+      <div class="form-group">
+        <label>NID নম্বর *</label>
+        <input id="tNid" type="text" placeholder="১৭ বা ১০ সংখ্যার NID">
+      </div>
+      <div class="form-group">
+        <label>মাসিক বেতন (টাকা)</label>
+        <input id="tSalary" type="number" placeholder="10000">
+      </div>
+      <div class="form-group">
+        <label>যোগদানের তারিখ</label>
+        <input id="tJoin" type="date">
+      </div>
+      <div class="form-group">
+        <label>ঠিকানা</label>
+        <input id="tAddress" type="text" placeholder="গ্রাম/জেলা">
+      </div>
+      <div class="form-group">
+        <label>শিক্ষাগত যোগ্যতা</label>
+        <input id="tEdu" type="text" placeholder="যেমন: দাওরায়ে হাদিস">
+      </div>
+    </div>
+    <div class="form-actions">
+      <button class="btn btn-primary" onclick="saveTeacher()">✅ সংরক্ষণ</button>
+      <button class="btn btn-outline" onclick="closeModal('teacherModal')">বাতিল</button>
+    </div>
+  </div>
+</div>
+
+<!-- MEETING MODAL -->
+<div class="modal-overlay" id="meetingModal">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title" id="meetingModalTitle">নতুন মিটিং নোটিশ</div>
+      <button class="modal-close" onclick="closeModal('meetingModal')">✕</button>
+    </div>
+    <input type="hidden" id="meetingEditId">
+    <div class="form-grid">
+      <div class="form-group" style="grid-column:1/-1">
+        <label>বিষয় / শিরোনাম *</label>
+        <input id="mTitle" type="text" placeholder="মিটিং এর বিষয়">
+      </div>
+      <div class="form-group">
+        <label>তারিখ</label>
+        <input id="mDate" type="date">
+      </div>
+      <div class="form-group">
+        <label>সময়</label>
+        <input id="mTime" type="time">
+      </div>
+      <div class="form-group">
+        <label>স্থান</label>
+        <input id="mPlace" type="text" placeholder="যেমন: মাদরাসার হলরুম">
+      </div>
+      <div class="form-group">
+        <label>ধরন</label>
+        <select id="mType">
+          <option>সাধারণ মিটিং</option>
+          <option>শিক্ষক মিটিং</option>
+          <option>অভিভাবক মিটিং</option>
+          <option>জরুরি নোটিশ</option>
+          <option>পরীক্ষা নোটিশ</option>
+        </select>
+      </div>
+      <div class="form-group" style="grid-column:1/-1">
+        <label>বিস্তারিত / নোটিশ বার্তা</label>
+        <textarea id="mBody" placeholder="নোটিশের বিস্তারিত লিখুন..."></textarea>
+      </div>
+    </div>
+    <div class="form-actions">
+      <button class="btn btn-primary" onclick="saveMeeting()">✅ সংরক্ষণ</button>
+      <button class="btn btn-outline" onclick="closeModal('meetingModal')">বাতিল</button>
+    </div>
+  </div>
+</div>
+
+<!-- INCOME/EXPENSE MODAL -->
+<div class="modal-overlay" id="incomeModal">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title" id="incomeModalTitle">আয় যোগ করুন</div>
+      <button class="modal-close" onclick="closeModal('incomeModal')">✕</button>
+    </div>
+    <input type="hidden" id="incomeEditId">
+    <input type="hidden" id="incomeType">
+    <div class="form-grid">
+      <div class="form-group" style="grid-column:1/-1">
+        <label>বিবরণ *</label>
+        <input id="iDesc" type="text" placeholder="আয়/ব্যায়ের বিবরণ">
+      </div>
+      <div class="form-group">
+        <label>পরিমাণ (টাকা) *</label>
+        <input id="iAmount" type="number" placeholder="0">
+      </div>
+      <div class="form-group">
+        <label>তারিখ</label>
+        <input id="iDate" type="date">
+      </div>
+      <div class="form-group">
+        <label>ক্যাটাগরি</label>
+        <select id="iCat">
+          <option>বেতন সংগ্রহ</option><option>দান/অনুদান</option>
+          <option>সরকারি অনুদান</option><option>পরীক্ষা ফি</option>
+          <option>শিক্ষক বেতন</option><option>বিদ্যুৎ বিল</option>
+          <option>মেরামত</option><option>আসবাবপত্র</option>
+          <option>শিক্ষা উপকরণ</option><option>অন্যান্য</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>মাস</label>
+        <select id="iMonth">
+          <option>জানুয়ারি</option><option>ফেব্রুয়ারি</option><option>মার্চ</option>
+          <option>এপ্রিল</option><option>মে</option><option>জুন</option>
+          <option>জুলাই</option><option>আগস্ট</option><option>সেপ্টেম্বর</option>
+          <option>অক্টোবর</option><option>নভেম্বর</option><option>ডিসেম্বর</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>বছর</label>
+        <input id="iYear" type="number" placeholder="2025">
+      </div>
+      <div class="form-group" style="grid-column:1/-1">
+        <label>মন্তব্য</label>
+        <textarea id="iNote" placeholder="অতিরিক্ত তথ্য..."></textarea>
+      </div>
+    </div>
+    <div class="form-actions">
+      <button class="btn btn-primary" onclick="saveIncome()">✅ সংরক্ষণ</button>
+      <button class="btn btn-outline" onclick="closeModal('incomeModal')">বাতিল</button>
+    </div>
+  </div>
+</div>
+
+<!-- SHARE MODAL -->
+<div class="modal-overlay" id="shareModal">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">📤 শেয়ার করুন</div>
+      <button class="modal-close" onclick="closeModal('shareModal')">✕</button>
+    </div>
+    <p style="font-size:13px;color:var(--text-light);margin-bottom:4px;">আপনার মাদরাসার রিপোর্ট শেয়ার করুন:</p>
+    <div class="share-options">
+      <button class="share-btn" onclick="shareWhatsApp()"><span>📱</span>WhatsApp</button>
+      <button class="share-btn" onclick="sharePrint()"><span>🖨️</span>প্রিন্ট / PDF</button>
+      <button class="share-btn" onclick="shareScreenshot()"><span>📸</span>স্ক্রিনশট</button>
+      <button class="share-btn" onclick="shareData()"><span>💾</span>ডেটা ব্যাকআপ</button>
+      <button class="share-btn" onclick="restoreData()"><span>♻️</span>ডেটা রিস্টোর</button>
+      <button class="share-btn" onclick="shareCopy()"><span>📋</span>সারসংক্ষেপ কপি</button>
+    </div>
+  </div>
+</div>
+
+<!-- DELETE CONFIRM -->
+<div class="modal-overlay" id="deleteModal">
+  <div class="modal" style="max-width:380px;">
+    <div class="modal-header">
+      <div class="modal-title">🗑️ মুছে ফেলবেন?</div>
+      <button class="modal-close" onclick="closeModal('deleteModal')">✕</button>
+    </div>
+    <p style="margin-bottom:20px;color:var(--text-light);">এই তথ্যটি স্থায়ীভাবে মুছে যাবে। নিশ্চিত করুন।</p>
+    <div class="form-actions">
+      <button class="btn btn-danger" onclick="confirmDelete()">🗑️ হ্যাঁ, মুছুন</button>
+      <button class="btn btn-outline" onclick="closeModal('deleteModal')">না, রাখুন</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ========== STATE ==========
+let db = {
+  madrasa: { name: '', address: '', phone: '', head: '', email: '' },
+  students: [],
+  fees: [],
+  teachers: [],
+  meetings: [],
+  transactions: [],
+  nextId: { s: 1, f: 1, t: 1, m: 1, i: 1 }
+};
+let deleteTarget = null;
+
+function saveDB() { localStorage.setItem('ummah_hisab', JSON.stringify(db)); }
+function loadDB() {
+  const d = localStorage.getItem('ummah_hisab');
+  if (d) db = JSON.parse(d);
+}
+
+loadDB();
+
+// ========== DATE ==========
+const months = ['জানুয়ারি','ফেব্রুয়ারি','মার্চ','এপ্রিল','মে','জুন','জুলাই','আগস্ট','সেপ্টেম্বর','অক্টোবর','নভেম্বর','ডিসেম্বর'];
+const now = new Date();
+const curMonth = months[now.getMonth()];
+const curYear = now.getFullYear();
+const prevMonth = months[now.getMonth() === 0 ? 11 : now.getMonth()-1];
+const prevYear = now.getMonth() === 0 ? curYear-1 : curYear;
+
+document.getElementById('currentDateBn').textContent = `${now.getDate()} ${curMonth} ${curYear}`;
+setInterval(() => {
+  const t = new Date();
+  document.getElementById('currentTimeBn').textContent = 
+    `${String(t.getHours()).padStart(2,'0')}:${String(t.getMinutes()).padStart(2,'0')}`;
+}, 1000);
+
+// ========== NAV ==========
+function showSection(id) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  document.querySelectorAll('.nav-btn').forEach(b => {
+    if (b.getAttribute('onclick')?.includes(id)) b.classList.add('active');
+  });
+  if (id === 'dashboard') renderDashboard();
+  if (id === 'students') renderStudents();
+  if (id === 'fees') renderFees();
+  if (id === 'teachers') renderTeachers();
+  if (id === 'meetings') renderMeetings();
+  if (id === 'income') renderIncome();
+  if (id === 'annual') renderAnnual();
+  if (id === 'settings') renderSettings();
+}
+
+// ========== MODAL ==========
+function openModal(id) { document.getElementById(id).classList.add('open'); }
+function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+
+// ========== MADRASA ==========
+function openMadrasaEdit() {
+  document.getElementById('mName').value = db.madrasa.name;
+  document.getElementById('mAddress').value = db.madrasa.address;
+  document.getElementById('mPhone').value = db.madrasa.phone;
+  document.getElementById('mHead').value = db.madrasa.head;
+  document.getElementById('mEmail').value = db.madrasa.email;
+  openModal('madrasaModal');
+}
+function saveMadrasa() {
+  db.madrasa = {
+    name: document.getElementById('mName').value,
+    address: document.getElementById('mAddress').value,
+    phone: document.getElementById('mPhone').value,
+    head: document.getElementById('mHead').value,
+    email: document.getElementById('mEmail').value,
+  };
+  saveDB();
+  updateTopbarName();
+  closeModal('madrasaModal');
+}
+
+// ========== STUDENTS ==========
+function openStudentModal(id = null) {
+  document.getElementById('studentEditId').value = id || '';
+  document.getElementById('studentModalTitle').textContent = id ? 'ছাত্র তথ্য সম্পাদনা' : 'নতুন ছাত্র/ছাত্রী যোগ করুন';
+  if (id) {
+    const s = db.students.find(x => x.id == id);
+    if (s) {
+      document.getElementById('sName').value = s.name;
+      document.getElementById('sGender').value = s.gender;
+      document.getElementById('sClass').value = s.cls;
+      document.getElementById('sFee').value = s.fee;
+      document.getElementById('sGuardian').value = s.guardian;
+      document.getElementById('sPhone').value = s.phone;
+      document.getElementById('sJoin').value = s.join;
+      document.getElementById('sAddress').value = s.address;
+    }
+  } else {
+    ['sName','sClass','sFee','sGuardian','sPhone','sJoin','sAddress'].forEach(f => document.getElementById(f).value = '');
+  }
+  openModal('studentModal');
+}
+function saveStudent() {
+  const name = document.getElementById('sName').value.trim();
+  if (!name) { alert('নাম লিখুন'); return; }
+  const editId = document.getElementById('studentEditId').value;
+  const obj = {
+    id: editId || (db.nextId.s++),
+    name, gender: document.getElementById('sGender').value,
+    cls: document.getElementById('sClass').value,
+    fee: parseFloat(document.getElementById('sFee').value) || 0,
+    guardian: document.getElementById('sGuardian').value,
+    phone: document.getElementById('sPhone').value,
+    join: document.getElementById('sJoin').value,
+    address: document.getElementById('sAddress').value,
+  };
+  if (editId) {
+    const idx = db.students.findIndex(x => x.id == editId);
+    db.students[idx] = obj;
+  } else {
+    db.students.push(obj);
+    // update class dropdown
+  }
+  saveDB(); closeModal('studentModal'); renderStudents();
+}
+function renderStudents(filter='', cls='') {
+  let list = db.students.filter(s =>
+    (!filter || s.name.toLowerCase().includes(filter.toLowerCase()) || String(s.id).includes(filter)) &&
+    (!cls || s.cls === cls)
+  );
+  const tb = document.getElementById('studentsTableBody');
+  const emp = document.getElementById('studentsEmpty');
+  if (list.length === 0) { tb.innerHTML = ''; emp.style.display = 'block'; return; }
+  emp.style.display = 'none';
+  tb.innerHTML = list.map(s => `
+    <tr>
+      <td>S-${String(s.id).padStart(3,'0')}</td>
+      <td><strong>${s.name}</strong> <small style="color:var(--text-light)">(${s.gender})</small></td>
+      <td>${s.cls}</td>
+      <td>${s.guardian}</td>
+      <td>${s.phone}</td>
+      <td style="color:var(--green);font-weight:700">৳${s.fee.toLocaleString()}</td>
+      <td>
+        <button class="btn btn-gold btn-sm" onclick="openStudentModal(${s.id})">✏️</button>
+        <button class="btn btn-danger btn-sm" onclick="askDelete('students',${s.id})">🗑️</button>
+      </td>
+    </tr>`).join('');
+  // update class dropdown
+  const classes = [...new Set(db.students.map(s => s.cls))];
+  const sel = document.querySelectorAll('[onchange*="filterStudentClass"]')[0];
+  if (sel) sel.innerHTML = '<option value="">সকল শ্রেণী</option>' + classes.map(c => `<option>${c}</option>`).join('');
+}
+function filterStudents(v) { renderStudents(v); }
+function filterStudentClass(v) { renderStudents('', v); }
+
+// ========== FEES ==========
+function openFeeModal(id = null) {
+  document.getElementById('feeEditId').value = id || '';
+  document.getElementById('feeModalTitle').textContent = id ? 'বেতন সম্পাদনা' : 'বেতন রেকর্ড করুন';
+  // populate student select
+  const sel = document.getElementById('fStudent');
+  sel.innerHTML = db.students.map(s => `<option value="${s.id}">${s.name} (${s.cls})</option>`).join('');
+  document.getElementById('fYear').value = curYear;
+  // set current month
+  const mi = months.indexOf(curMonth);
+  document.getElementById('fMonth').selectedIndex = mi;
+  document.getElementById('fDate').value = new Date().toISOString().split('T')[0];
+  if (id) {
+    const f = db.fees.find(x => x.id == id);
+    if (f) {
+      sel.value = f.student;
+      document.getElementById('fMonth').value = f.month;
+      document.getElementById('fYear').value = f.year;
+      document.getElementById('fAmount').value = f.amount;
+      document.getElementById('fPaid').value = f.paid;
+      document.getElementById('fDate').value = f.date;
+      document.getElementById('fNote').value = f.note;
+    }
+  } else {
+    ['fAmount','fPaid','fNote'].forEach(f => document.getElementById(f).value = '');
+    // auto-fill amount from student
+    if (db.students.length > 0) document.getElementById('fAmount').value = db.students[0].fee;
+  }
+  openModal('feeModal');
+}
+function saveFee() {
+  const editId = document.getElementById('feeEditId').value;
+  const studentId = parseInt(document.getElementById('fStudent').value);
+  const amount = parseFloat(document.getElementById('fAmount').value) || 0;
+  const paid = parseFloat(document.getElementById('fPaid').value) || 0;
+  const obj = {
+    id: editId || (db.nextId.f++),
+    student: studentId,
+    month: document.getElementById('fMonth').value,
+    year: parseInt(document.getElementById('fYear').value),
+    amount, paid, due: amount - paid,
+    date: document.getElementById('fDate').value,
+    note: document.getElementById('fNote').value,
+  };
+  if (editId) { const idx = db.fees.findIndex(x => x.id == editId); db.fees[idx] = obj; }
+  else db.fees.push(obj);
+  saveDB(); closeModal('feeModal'); renderFees();
+}
+let activeFeeMonth = '';
+function renderFees() {
+  // month tabs
+  const allMonths = [...new Set(db.fees.map(f => `${f.month} ${f.year}`))];
+  if (!activeFeeMonth && allMonths.length) activeFeeMonth = allMonths[0];
+  document.getElementById('feeMonthTabs').innerHTML = 
+    ['সব',...allMonths].map(m => `<button class="month-tab ${(activeFeeMonth===m||(!activeFeeMonth&&m==='সব'))?'active':''}" onclick="setFeeMonth('${m}')">${m}</button>`).join('');
+
+  let list = activeFeeMonth && activeFeeMonth !== 'সব'
+    ? db.fees.filter(f => `${f.month} ${f.year}` === activeFeeMonth)
+    : db.fees;
+
+  const tb = document.getElementById('feesTableBody');
+  const emp = document.getElementById('feesEmpty');
+  if (list.length === 0) { tb.innerHTML = ''; emp.style.display = 'block'; return; }
+  emp.style.display = 'none';
+  tb.innerHTML = list.map(f => {
+    const s = db.students.find(x => x.id === f.student);
+    const status = f.due <= 0 ? 'পরিশোধ' : f.paid > 0 ? 'আংশিক' : 'বকেয়া';
+    const badgeClass = f.due <= 0 ? 'badge-green' : f.paid > 0 ? 'badge-orange' : 'badge-red';
+    return `<tr>
+      <td><strong>${s ? s.name : 'অজ্ঞাত'}</strong></td>
+      <td>${s ? s.cls : '-'}</td>
+      <td>${f.month} ${f.year}</td>
+      <td>৳${f.amount.toLocaleString()}</td>
+      <td style="color:var(--green);font-weight:600">৳${f.paid.toLocaleString()}</td>
+      <td style="color:${f.due>0?'var(--red)':'var(--green)'};font-weight:600">৳${f.due.toLocaleString()}</td>
+      <td><span class="badge ${badgeClass}">${status}</span></td>
+      <td>
+        <button class="btn btn-gold btn-sm" onclick="openFeeModal(${f.id})">✏️</button>
+        <button class="btn btn-danger btn-sm" onclick="askDelete('fees',${f.id})">🗑️</button>
+      </td>
+    </tr>`;
+  }).join('');
+}
+function setFeeMonth(m) { activeFeeMonth = m === 'সব' ? '' : m; renderFees(); }
+
+// ========== TEACHERS ==========
+function openTeacherModal(id = null) {
+  document.getElementById('teacherEditId').value = id || '';
+  document.getElementById('teacherModalTitle').textContent = id ? 'শিক্ষক তথ্য সম্পাদনা' : 'নতুন শিক্ষক যোগ করুন';
+  if (id) {
+    const t = db.teachers.find(x => x.id == id);
+    if (t) {
+      document.getElementById('tName').value = t.name;
+      document.getElementById('tSubject').value = t.subject;
+      document.getElementById('tPhone').value = t.phone;
+      document.getElementById('tNid').value = t.nid;
+      document.getElementById('tSalary').value = t.salary;
+      document.getElementById('tJoin').value = t.join;
+      document.getElementById('tAddress').value = t.address;
+      document.getElementById('tEdu').value = t.edu;
+    }
+  } else {
+    ['tName','tSubject','tPhone','tNid','tSalary','tJoin','tAddress','tEdu'].forEach(f => document.getElementById(f).value='');
+  }
+  openModal('teacherModal');
+}
+function saveTeacher() {
+  const name = document.getElementById('tName').value.trim();
+  if (!name) { alert('নাম লিখুন'); return; }
+  const editId = document.getElementById('teacherEditId').value;
+  const obj = {
+    id: editId || (db.nextId.t++),
+    name, subject: document.getElementById('tSubject').value,
+    phone: document.getElementById('tPhone').value,
+    nid: document.getElementById('tNid').value,
+    salary: parseFloat(document.getElementById('tSalary').value) || 0,
+    join: document.getElementById('tJoin').value,
+    address: document.getElementById('tAddress').value,
+    edu: document.getElementById('tEdu').value,
+  };
+  if (editId) { const idx = db.teachers.findIndex(x => x.id == editId); db.teachers[idx] = obj; }
+  else db.teachers.push(obj);
+  saveDB(); closeModal('teacherModal'); renderTeachers();
+}
+function renderTeachers() {
+  const tb = document.getElementById('teachersTableBody');
+  const emp = document.getElementById('teachersEmpty');
+  if (db.teachers.length === 0) { tb.innerHTML = ''; emp.style.display = 'block'; return; }
+  emp.style.display = 'none';
+  tb.innerHTML = db.teachers.map(t => `<tr>
+    <td><strong>${t.name}</strong></td>
+    <td>${t.subject}</td>
+    <td>${t.phone}</td>
+    <td><span style="font-family:monospace;background:#f0f9f4;padding:2px 8px;border-radius:6px;">${t.nid}</span></td>
+    <td style="color:var(--green);font-weight:700">৳${t.salary.toLocaleString()}</td>
+    <td>${t.join}</td>
+    <td>
+      <button class="btn btn-gold btn-sm" onclick="openTeacherModal(${t.id})">✏️</button>
+      <button class="btn btn-danger btn-sm" onclick="askDelete('teachers',${t.id})">🗑️</button>
+    </td>
+  </tr>`).join('');
+}
+
+// ========== MEETINGS ==========
+function openMeetingModal(id = null) {
+  document.getElementById('meetingEditId').value = id || '';
+  document.getElementById('meetingModalTitle').textContent = id ? 'নোটিশ সম্পাদনা' : 'নতুন মিটিং নোটিশ';
+  if (id) {
+    const m = db.meetings.find(x => x.id == id);
+    if (m) {
+      document.getElementById('mTitle').value = m.title;
+      document.getElementById('mDate').value = m.date;
+      document.getElementById('mTime').value = m.time;
+      document.getElementById('mPlace').value = m.place;
+      document.getElementById('mType').value = m.type;
+      document.getElementById('mBody').value = m.body;
+    }
+  } else {
+    ['mTitle','mDate','mTime','mPlace','mBody'].forEach(f => document.getElementById(f).value='');
+  }
+  openModal('meetingModal');
+}
+function saveMeeting() {
+  const title = document.getElementById('mTitle').value.trim();
+  if (!title) { alert('শিরোনাম লিখুন'); return; }
+  const editId = document.getElementById('meetingEditId').value;
+  const obj = {
+    id: editId || (db.nextId.m++),
+    title, date: document.getElementById('mDate').value,
+    time: document.getElementById('mTime').value,
+    place: document.getElementById('mPlace').value,
+    type: document.getElementById('mType').value,
+    body: document.getElementById('mBody').value,
+    created: new Date().toLocaleDateString('bn-BD'),
+  };
+  if (editId) { const idx = db.meetings.findIndex(x => x.id == editId); db.meetings[idx] = obj; }
+  else db.meetings.push(obj);
+  saveDB(); closeModal('meetingModal'); renderMeetings();
+}
+function renderMeetings() {
+  const list = document.getElementById('meetingsList');
+  const emp = document.getElementById('meetingsEmpty');
+  if (db.meetings.length === 0) { list.innerHTML = ''; emp.style.display='block'; return; }
+  emp.style.display = 'none';
+  list.innerHTML = [...db.meetings].reverse().map(m => `
+    <div class="notice-item">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;">
+        <div>
+          <h4>📌 ${m.title}</h4>
+          <p>${m.body}</p>
+          <div class="notice-meta">📅 ${m.date} ${m.time ? '| ⏰ '+m.time : ''} ${m.place ? '| 📍 '+m.place : ''} | 🏷️ ${m.type}</div>
+        </div>
+        <div style="display:flex;gap:6px;flex-shrink:0;margin-left:10px;">
+          <button class="btn btn-gold btn-sm" onclick="openMeetingModal(${m.id})">✏️</button>
+          <button class="btn btn-danger btn-sm" onclick="askDelete('meetings',${m.id})">🗑️</button>
+          <button class="btn btn-outline btn-sm" onclick="shareMeeting(${m.id})">📤</button>
+        </div>
+      </div>
+    </div>`).join('');
+}
+
+// ========== INCOME/EXPENSE ==========
+function openIncomeModal(type, id = null) {
+  document.getElementById('incomeType').value = type;
+  document.getElementById('incomeEditId').value = id || '';
+  document.getElementById('incomeModalTitle').textContent = id ? 'লেনদেন সম্পাদনা' : (type === 'income' ? '💚 আয় যোগ করুন' : '🔴 ব্যায় যোগ করুন');
+  document.getElementById('iDate').value = new Date().toISOString().split('T')[0];
+  document.getElementById('iYear').value = curYear;
+  const mi = months.indexOf(curMonth);
+  document.getElementById('iMonth').selectedIndex = mi;
+  if (id) {
+    const tr = db.transactions.find(x => x.id == id);
+    if (tr) {
+      document.getElementById('iDesc').value = tr.desc;
+      document.getElementById('iAmount').value = tr.amount;
+      document.getElementById('iDate').value = tr.date;
+      document.getElementById('iCat').value = tr.cat;
+      document.getElementById('iMonth').value = tr.month;
+      document.getElementById('iYear').value = tr.year;
+      document.getElementById('iNote').value = tr.note;
+    }
+  } else {
+    ['iDesc','iAmount','iNote'].forEach(f => document.getElementById(f).value='');
+  }
+  openModal('incomeModal');
+}
+function saveIncome() {
+  const desc = document.getElementById('iDesc').value.trim();
+  if (!desc) { alert('বিবরণ লিখুন'); return; }
+  const editId = document.getElementById('incomeEditId').value;
+  const obj = {
+    id: editId || (db.nextId.i++),
+    type: document.getElementById('incomeType').value,
+    desc, amount: parseFloat(document.getElementById('iAmount').value) || 0,
+    date: document.getElementById('iDate').value,
+    cat: document.getElementById('iCat').value,
+    month: document.getElementById('iMonth').value,
+    year: parseInt(document.getElementById('iYear').value),
+    note: document.getElementById('iNote').value,
+  };
+  if (editId) { const idx = db.transactions.findIndex(x => x.id == editId); db.transactions[idx] = obj; }
+  else db.transactions.push(obj);
+  saveDB(); closeModal('incomeModal'); renderIncome();
+}
+let activeIncomeMonth = '';
+function renderIncome() {
+  const allMonths = [...new Set(db.transactions.map(t => `${t.month} ${t.year}`))];
+  if (!activeIncomeMonth && allMonths.length) activeIncomeMonth = allMonths[0];
+  document.getElementById('incomeMonthTabs').innerHTML =
+    ['সব',...allMonths].map(m => `<button class="month-tab ${(activeIncomeMonth===m||(!activeIncomeMonth&&m==='সব'))?'active':''}" onclick="setIncomeMonth('${m}')">${m}</button>`).join('');
+
+  const allInc = db.transactions.filter(t => t.type === 'income').reduce((a,b) => a+b.amount, 0);
+  const allExp = db.transactions.filter(t => t.type === 'expense').reduce((a,b) => a+b.amount, 0);
+  const cash = allInc - allExp;
+
+  // current/prev month
+  const cm = db.transactions.filter(t => t.month === curMonth && t.year === curYear);
+  const pm = db.transactions.filter(t => t.month === prevMonth && t.year === prevYear);
+  const cmInc = cm.filter(t=>t.type==='income').reduce((a,b)=>a+b.amount,0);
+  const cmExp = cm.filter(t=>t.type==='expense').reduce((a,b)=>a+b.amount,0);
+  const pmInc = pm.filter(t=>t.type==='income').reduce((a,b)=>a+b.amount,0);
+  const pmExp = pm.filter(t=>t.type==='expense').reduce((a,b)=>a+b.amount,0);
+
+  document.getElementById('ieCards').innerHTML = `
+    <div class="card" style="margin:0;">
+      <div class="card-title" style="margin-bottom:10px;">📅 গত মাস (${prevMonth})</div>
+      <div class="ie-row"><span class="ie-label">আয়</span><span class="ie-amount ie-green">৳${pmInc.toLocaleString()}</span></div>
+      <div class="ie-row"><span class="ie-label">ব্যায়</span><span class="ie-amount ie-red">৳${pmExp.toLocaleString()}</span></div>
+      <div class="ie-row"><span class="ie-label">নীট</span><span class="ie-amount" style="color:${pmInc-pmExp>=0?'var(--green)':'var(--red)'}">৳${(pmInc-pmExp).toLocaleString()}</span></div>
+    </div>
+    <div class="card" style="margin:0;">
+      <div class="card-title" style="margin-bottom:10px;">📅 চলতি মাস (${curMonth})</div>
+      <div class="ie-row"><span class="ie-label">আয়</span><span class="ie-amount ie-green">৳${cmInc.toLocaleString()}</span></div>
+      <div class="ie-row"><span class="ie-label">ব্যায়</span><span class="ie-amount ie-red">৳${cmExp.toLocaleString()}</span></div>
+      <div class="ie-row"><span class="ie-label">নীট</span><span class="ie-amount" style="color:${cmInc-cmExp>=0?'var(--green)':'var(--red)'}">৳${(cmInc-cmExp).toLocaleString()}</span></div>
+    </div>
+    <div class="card" style="margin:0;background:${cash>=0?'#f0fdf4':'#fff5f5'};">
+      <div class="card-title" style="margin-bottom:10px;">💵 বর্তমান ক্যাশ</div>
+      <div style="font-size:32px;font-weight:800;color:${cash>=0?'var(--green)':'var(--red)'};text-align:center;margin:10px 0;">৳${cash.toLocaleString()}</div>
+      <p style="text-align:center;font-size:12px;color:var(--text-light)">মোট আয় − মোট ব্যায়</p>
+    </div>
+  `;
+
+  let list = activeIncomeMonth && activeIncomeMonth !== 'সব'
+    ? db.transactions.filter(t => `${t.month} ${t.year}` === activeIncomeMonth)
+    : db.transactions;
+
+  const tb = document.getElementById('incomeTableBody');
+  const emp = document.getElementById('incomeEmpty');
+  if (list.length === 0) { tb.innerHTML=''; emp.style.display='block'; return; }
+  emp.style.display = 'none';
+  tb.innerHTML = [...list].reverse().map(t => `<tr>
+    <td>${t.date}</td>
+    <td><strong>${t.desc}</strong>${t.note?`<br><small style="color:var(--text-light)">${t.note}</small>`:''}
+    </td>
+    <td><span class="badge" style="background:#eee">${t.cat}</span></td>
+    <td style="color:var(--green);font-weight:700">${t.type==='income'?'৳'+t.amount.toLocaleString():'-'}</td>
+    <td style="color:var(--red);font-weight:700">${t.type==='expense'?'৳'+t.amount.toLocaleString():'-'}</td>
+    <td>${t.month} ${t.year}</td>
+    <td>
+      <button class="btn btn-gold btn-sm" onclick="openIncomeModal('${t.type}',${t.id})">✏️</button>
+      <button class="btn btn-danger btn-sm" onclick="askDelete('transactions',${t.id})">🗑️</button>
+    </td>
+  </tr>`).join('');
+}
+function setIncomeMonth(m) { activeIncomeMonth = m === 'সব' ? '' : m; renderIncome(); }
+
+// ========== ANNUAL REPORT ==========
+function renderAnnual() {
+  const totalInc = db.transactions.filter(t=>t.type==='income').reduce((a,b)=>a+b.amount,0);
+  const totalExp = db.transactions.filter(t=>t.type==='expense').reduce((a,b)=>a+b.amount,0);
+  const cash = totalInc - totalExp;
+  const totalFeeCollected = db.fees.reduce((a,b)=>a+b.paid,0);
+  const totalFeeDue = db.fees.reduce((a,b)=>a+b.due,0);
+
+  const monthlyData = months.map(m => {
+    const inc = db.transactions.filter(t=>t.type==='income'&&t.month===m&&t.year===curYear).reduce((a,b)=>a+b.amount,0);
+    const exp = db.transactions.filter(t=>t.type==='expense'&&t.month===m&&t.year===curYear).reduce((a,b)=>a+b.amount,0);
+    return { m, inc, exp };
+  });
+
+  document.getElementById('annualReport').innerHTML = `
+    <div style="text-align:center;margin-bottom:24px;padding:20px;background:linear-gradient(135deg,var(--green-dark),var(--green));color:white;border-radius:12px;">
+      <div style="font-family:'Amiri',serif;font-size:20px;margin-bottom:6px;">بِسْمِ اللهِ الرَّحْمٰنِ الرَّحِيْمِ</div>
+      <h2 style="font-size:22px;">${db.madrasa.name || 'উম্মাহ হিসাব'}</h2>
+      <p style="opacity:0.8;">${db.madrasa.address || ''} ${db.madrasa.phone ? '| '+db.madrasa.phone : ''}</p>
+      <p style="opacity:0.7;font-size:13px;margin-top:6px;">বার্ষিক আর্থিক বিবরণী — ${curYear}</p>
+    </div>
+
+    <div class="summary-grid">
+      <div class="sum-card green"><div class="sum-icon">📈</div><div class="sum-info"><p>মোট বার্ষিক আয়</p><h3>৳${totalInc.toLocaleString()}</h3></div></div>
+      <div class="sum-card red"><div class="sum-icon">📉</div><div class="sum-info"><p>মোট বার্ষিক ব্যায়</p><h3>৳${totalExp.toLocaleString()}</h3></div></div>
+      <div class="sum-card ${cash>=0?'teal':'orange'}"><div class="sum-icon">💵</div><div class="sum-info"><p>বর্তমান ক্যাশ</p><h3>৳${cash.toLocaleString()}</h3></div></div>
+      <div class="sum-card gold"><div class="sum-icon">🎓</div><div class="sum-info"><p>মোট ছাত্র</p><h3>${db.students.length}</h3></div></div>
+      <div class="sum-card blue"><div class="sum-icon">💸</div><div class="sum-info"><p>বেতন সংগ্রহ</p><h3>৳${totalFeeCollected.toLocaleString()}</h3></div></div>
+      <div class="sum-card orange"><div class="sum-icon">⚠️</div><div class="sum-info"><p>মোট বকেয়া</p><h3>৳${totalFeeDue.toLocaleString()}</h3></div></div>
+    </div>
+
+    <h3 style="margin:20px 0 12px;color:var(--green-dark);">📅 মাসওয়ারি হিসাব (${curYear})</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>মাস</th><th>আয়</th><th>ব্যায়</th><th>নীট</th><th>অবস্থা</th></tr></thead>
+        <tbody>
+          ${monthlyData.map(r => `<tr>
+            <td><strong>${r.m}</strong></td>
+            <td style="color:var(--green);font-weight:600">৳${r.inc.toLocaleString()}</td>
+            <td style="color:var(--red);font-weight:600">৳${r.exp.toLocaleString()}</td>
+            <td style="color:${r.inc-r.exp>=0?'var(--green)':'var(--red)'};font-weight:700">৳${(r.inc-r.exp).toLocaleString()}</td>
+            <td>${r.inc===0&&r.exp===0?'<span class="badge" style="background:#eee">কোনো লেনদেন নেই</span>':r.inc-r.exp>=0?'<span class="badge badge-green">উদ্বৃত্ত</span>':'<span class="badge badge-red">ঘাটতি</span>'}</td>
+          </tr>`).join('')}
+        </tbody>
+      </table>
+    </div>
+
+    <div style="margin-top:30px;padding:16px;background:#f9f9f9;border-radius:12px;text-align:center;font-size:12px;color:var(--text-light);">
+      প্রিন্ট তারিখ: ${new Date().toLocaleDateString('bn-BD')} | উম্মাহ হিসাব সফটওয়্যার
+    </div>
+  `;
+}
+
+// ========== DASHBOARD ==========
+function renderDashboard() {
+  const totalInc = db.transactions.filter(t=>t.type==='income').reduce((a,b)=>a+b.amount,0);
+  const totalExp = db.transactions.filter(t=>t.type==='expense').reduce((a,b)=>a+b.amount,0);
+  const cash = totalInc - totalExp;
+  const due = db.fees.reduce((a,b)=>a+b.due,0);
+  const cmInc = db.transactions.filter(t=>t.type==='income'&&t.month===curMonth&&t.year===curYear).reduce((a,b)=>a+b.amount,0);
+  const cmExp = db.transactions.filter(t=>t.type==='expense'&&t.month===curMonth&&t.year===curYear).reduce((a,b)=>a+b.amount,0);
+
+  document.getElementById('dashSummary').innerHTML = `
+    <div class="sum-card gold"><div class="sum-icon">🎓</div><div class="sum-info"><p>মোট ছাত্র-ছাত্রী</p><h3>${db.students.length}</h3></div></div>
+    <div class="sum-card blue"><div class="sum-icon">👨‍🏫</div><div class="sum-info"><p>মোট শিক্ষক</p><h3>${db.teachers.length}</h3></div></div>
+    <div class="sum-card green"><div class="sum-icon">📈</div><div class="sum-info"><p>চলতি মাস আয়</p><h3>৳${cmInc.toLocaleString()}</h3></div></div>
+    <div class="sum-card red"><div class="sum-icon">📉</div><div class="sum-info"><p>চলতি মাস ব্যায়</p><h3>৳${cmExp.toLocaleString()}</h3></div></div>
+    <div class="sum-card orange"><div class="sum-icon">⚠️</div><div class="sum-info"><p>মোট বকেয়া</p><h3>৳${due.toLocaleString()}</h3></div></div>
+    <div class="sum-card teal"><div class="sum-icon">💵</div><div class="sum-info"><p>বর্তমান ক্যাশ</p><h3>৳${cash.toLocaleString()}</h3></div></div>
+  `;
+
+  // overdue students
+  const overdueStudents = db.fees.filter(f => f.due > 0);
+  const overdueDiv = document.getElementById('overdueAlert');
+  if (overdueStudents.length === 0) {
+    overdueDiv.innerHTML = '<div class="alert alert-success">✅ কোনো বকেয়া নেই! সব বেতন পরিশোধ হয়েছে।</div>';
+  } else {
+    overdueDiv.innerHTML = `<div class="alert alert-danger">⚠️ ${overdueStudents.length}টি বকেয়া রেকর্ড আছে, মোট ৳${due.toLocaleString()} টাকা</div>` +
+      overdueStudents.slice(0,3).map(f => {
+        const s = db.students.find(x => x.id === f.student);
+        return `<div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid #eee;font-size:13px;">
+          <span>${s?.name || 'অজ্ঞাত'} (${f.month})</span>
+          <strong style="color:var(--red)">৳${f.due.toLocaleString()}</strong>
+        </div>`;
+      }).join('') + (overdueStudents.length > 3 ? `<p style="font-size:12px;color:var(--text-light);margin-top:6px;">+ আরও ${overdueStudents.length-3}টি বকেয়া</p>` : '');
+  }
+
+  // cash
+  document.getElementById('cashStatus').innerHTML = `
+    <div style="text-align:center;padding:10px 0;">
+      <div style="font-size:36px;font-weight:800;color:${cash>=0?'var(--green)':'var(--red)'}">৳${cash.toLocaleString()}</div>
+      <p style="font-size:12px;color:var(--text-light);margin-top:4px;">মোট আয়: ৳${totalInc.toLocaleString()} | মোট ব্যায়: ৳${totalExp.toLocaleString()}</p>
+      <div class="alert ${cash>=0?'alert-success':'alert-danger'}" style="margin-top:12px;">
+        ${cash>=0?'✅ ইতিবাচক ব্যালেন্স':'⚠️ ব্যালেন্স ঘাটতিতে!'}
+      </div>
+    </div>
+  `;
+}
+
+// ========== DELETE ==========
+function askDelete(collection, id) {
+  deleteTarget = { collection, id };
+  openModal('deleteModal');
+}
+function confirmDelete() {
+  if (!deleteTarget) return;
+  db[deleteTarget.collection] = db[deleteTarget.collection].filter(x => x.id != deleteTarget.id);
+  saveDB(); closeModal('deleteModal'); deleteTarget = null;
+  // re-render current section
+  const active = document.querySelector('.section.active')?.id;
+  if (active) showSection(active);
+}
+
+// ========== SHARE ==========
+function openShare() { openModal('shareModal'); }
+function shareWhatsApp() {
+  const total = db.transactions.filter(t=>t.type==='income').reduce((a,b)=>a+b.amount,0);
+  const exp = db.transactions.filter(t=>t.type==='expense').reduce((a,b)=>a+b.amount,0);
+  const msg = `🕌 *${db.madrasa.name || 'উম্মাহ হিসাব'}*\n━━━━━━━━━━━━━━━━\n👩‍🎓 মোট ছাত্র: ${db.students.length}\n👨‍🏫 মোট শিক্ষক: ${db.teachers.length}\n📈 মোট আয়: ৳${total.toLocaleString()}\n📉 মোট ব্যায়: ৳${exp.toLocaleString()}\n💵 বর্তমান ক্যাশ: ৳${(total-exp).toLocaleString()}\n━━━━━━━━━━━━━━━━\n_উম্মাহ হিসাব অ্যাপ দ্বারা তৈরি_`;
+  window.open('https://wa.me/?text=' + encodeURIComponent(msg));
+}
+function sharePrint() { window.print(); }
+function shareScreenshot() { alert('স্ক্রিনশট নিতে আপনার ডিভাইসের বিল্ট-ইন স্ক্রিনশট ফিচার ব্যবহার করুন।'); }
+function shareData() {
+  const blob = new Blob([JSON.stringify(db, null, 2)], {type:'application/json'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = `ummah_hisab_backup_${new Date().toISOString().split('T')[0]}.json`;
+  a.click();
+}
+function restoreData() {
+  const input = document.createElement('input');
+  input.type = 'file'; input.accept = '.json';
+  input.onchange = e => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const r = new FileReader();
+    r.onload = ev => {
+      try {
+        db = JSON.parse(ev.target.result);
+        saveDB();
+        location.reload();
+      } catch { alert('ফাইলটি সঠিক নয়।'); }
+    };
+    r.readAsText(file);
+  };
+  input.click();
+}
+function shareCopy() {
+  const total = db.transactions.filter(t=>t.type==='income').reduce((a,b)=>a+b.amount,0);
+  const exp = db.transactions.filter(t=>t.type==='expense').reduce((a,b)=>a+b.amount,0);
+  const text = `${db.madrasa.name || 'উম্মাহ হিসাব'} | ছাত্র: ${db.students.length} | শিক্ষক: ${db.teachers.length} | আয়: ৳${total.toLocaleString()} | ব্যায়: ৳${exp.toLocaleString()} | ক্যাশ: ৳${(total-exp).toLocaleString()}`;
+  navigator.clipboard.writeText(text).then(() => alert('কপি হয়েছে! এখন পেস্ট করুন।'));
+}
+function shareMeeting(id) {
+  const m = db.meetings.find(x => x.id == id);
+  if (!m) return;
+  const msg = `📌 *${m.title}*\n━━━━━━━━━━━━━━━━\n${m.body}\n📅 তারিখ: ${m.date}${m.time?' | ⏰ সময়: '+m.time:''}\n📍 স্থান: ${m.place}\n🏫 ${db.madrasa.name || 'মাদরাসা'}`;
+  window.open('https://wa.me/?text=' + encodeURIComponent(msg));
+}
+function printReport() { renderAnnual(); setTimeout(window.print, 300); }
+
+// ========== SETTINGS ==========
+function renderSettings() {
+  const m = db.madrasa;
+  document.getElementById('sMadrasaName').value = m.name || '';
+  document.getElementById('sMadrasaAddress').value = m.address || '';
+  document.getElementById('sMadrasaPhone').value = m.phone || '';
+  document.getElementById('sMadrasaHead').value = m.head || '';
+  document.getElementById('sMadrasaEmail').value = m.email || '';
+  document.getElementById('sMadrasaYear').value = m.year || '';
+  document.getElementById('sMadrasaDesc').value = m.desc || '';
+  updateSettingsPreview();
+  // live preview on input
+  ['sMadrasaName','sMadrasaAddress','sMadrasaPhone','sMadrasaHead'].forEach(id => {
+    document.getElementById(id).oninput = updateSettingsPreview;
+  });
+}
+function updateSettingsPreview() {
+  const name = document.getElementById('sMadrasaName').value || '—';
+  const addr = document.getElementById('sMadrasaAddress').value;
+  const phone = document.getElementById('sMadrasaPhone').value;
+  const head = document.getElementById('sMadrasaHead').value;
+  document.getElementById('prevName').textContent = name;
+  document.getElementById('prevAddress').textContent = addr;
+  document.getElementById('prevPhone').textContent = phone ? '📞 ' + phone : '';
+  document.getElementById('prevHead').textContent = head ? '👤 মুহতামিম: ' + head : '';
+}
+function saveSettingsMadrasa() {
+  db.madrasa = {
+    ...db.madrasa,
+    name: document.getElementById('sMadrasaName').value.trim(),
+    address: document.getElementById('sMadrasaAddress').value.trim(),
+    phone: document.getElementById('sMadrasaPhone').value.trim(),
+    head: document.getElementById('sMadrasaHead').value.trim(),
+    email: document.getElementById('sMadrasaEmail').value.trim(),
+    year: document.getElementById('sMadrasaYear').value.trim(),
+    desc: document.getElementById('sMadrasaDesc').value.trim(),
+  };
+  saveDB();
+  updateTopbarName();
+  const alert = document.getElementById('settingsSaveAlert');
+  alert.style.display = 'flex';
+  setTimeout(() => alert.style.display = 'none', 3000);
+}
+function updateTopbarName() {
+  const n = db.madrasa.name || 'মাদরাসার নাম সেট করুন';
+  document.getElementById('madrasaNameDisplay').textContent = n;
+  document.getElementById('madrasaWelcomeName').textContent = 'স্বাগতম, ' + (db.madrasa.name || 'উম্মাহ হিসাব') + '-এ';
+}
+function changeTheme(primary, dark) {
+  document.documentElement.style.setProperty('--green', primary);
+  document.documentElement.style.setProperty('--green-dark', dark);
+  document.documentElement.style.setProperty('--green-light', primary);
+  db.settings = db.settings || {};
+  db.settings.theme = { primary, dark };
+  saveDB();
+}
+function changeFontSize(size) {
+  document.body.style.fontSize = size + 'px';
+  db.settings = db.settings || {};
+  db.settings.fontSize = size;
+  saveDB();
+}
+function confirmClearAll() { openModal('clearAllModal'); }
+function doClearAll() {
+  const inp = document.getElementById('clearConfirmInput').value.trim();
+  if (inp !== 'মুছুন') { alert('সঠিকভাবে "মুছুন" লিখুন'); return; }
+  db = { madrasa: db.madrasa, students: [], fees: [], teachers: [], meetings: [], transactions: [], nextId: {s:1,f:1,t:1,m:1,i:1} };
+  saveDB(); closeModal('clearAllModal'); location.reload();
+}
+
+// ========== AUTH SYSTEM ==========
+const DEFAULT_PASSWORD = 'admin123';
+const SESSION_KEY = 'ummah_session';
+const SESSION_DURATION = 8 * 60 * 60 * 1000; // 8 hours
+
+function hashPassword(pw) {
+  // simple hash for localStorage (not cryptographic, but obscures plain text)
+  let hash = 0;
+  const salt = 'UmmahHisab_2025_Salt';
+  const str = pw + salt;
+  for (let i = 0; i < str.length; i++) {
+    const chr = str.charCodeAt(i);
+    hash = ((hash << 5) - hash) + chr;
+    hash |= 0;
+  }
+  return 'UH_' + Math.abs(hash).toString(36).toUpperCase();
+}
+
+function getStoredHash() {
+  return localStorage.getItem('ummah_pw_hash') || hashPassword(DEFAULT_PASSWORD);
+}
+
+function isSessionValid() {
+  try {
+    const s = JSON.parse(sessionStorage.getItem(SESSION_KEY));
+    if (!s) return false;
+    if (Date.now() - s.time > SESSION_DURATION) { sessionStorage.removeItem(SESSION_KEY); return false; }
+    return s.auth === true;
+  } catch { return false; }
+}
+
+function createSession() {
+  sessionStorage.setItem(SESSION_KEY, JSON.stringify({ auth: true, time: Date.now() }));
+}
+
+function destroySession() {
+  sessionStorage.removeItem(SESSION_KEY);
+}
+
+function doLogin() {
+  const pw = document.getElementById('loginPwInput').value;
+  if (!pw) return;
+  const err = document.getElementById('loginError');
+  if (hashPassword(pw) === getStoredHash()) {
+    err.classList.remove('show');
+    createSession();
+    document.getElementById('loginScreen').classList.remove('show');
+    document.getElementById('appWrapper').style.display = 'block';
+    document.getElementById('loginPwInput').value = '';
+    initApp();
+  } else {
+    err.classList.add('show');
+    document.getElementById('loginPwInput').value = '';
+    document.getElementById('loginPwInput').focus();
+    // shake animation
+    const box = document.querySelector('.login-box');
+    box.style.animation = 'none';
+    box.offsetHeight;
+    box.style.animation = 'shake 0.4s ease';
+    setTimeout(() => box.style.animation = '', 400);
+  }
+}
+
+function doLogout() { openModal('logoutModal'); }
+
+function confirmLogout() {
+  destroySession();
+  closeModal('logoutModal');
+  document.getElementById('appWrapper').style.display = 'none';
+  document.getElementById('loginScreen').classList.add('show');
+  document.getElementById('loginPwInput').value = '';
+  document.getElementById('loginError').classList.remove('show');
+}
+
+function changePassword() {
+  const cur = document.getElementById('curPwInput').value;
+  const nw = document.getElementById('newPwInput').value;
+  const conf = document.getElementById('confirmPwInput').value;
+  const alertEl = document.getElementById('pwChangeAlert');
+
+  function showAlert(msg, type) {
+    alertEl.className = 'alert alert-' + type;
+    alertEl.textContent = msg;
+    alertEl.style.display = 'flex';
+    setTimeout(() => alertEl.style.display = 'none', 4000);
+  }
+
+  if (hashPassword(cur) !== getStoredHash()) { showAlert('❌ বর্তমান পাসওয়ার্ড ভুল!', 'danger'); return; }
+  if (nw.length < 6) { showAlert('❌ নতুন পাসওয়ার্ড কমপক্ষে ৬ অক্ষরের হতে হবে!', 'danger'); return; }
+  if (nw !== conf) { showAlert('❌ নিশ্চিত পাসওয়ার্ড মিলছে না!', 'danger'); return; }
+
+  localStorage.setItem('ummah_pw_hash', hashPassword(nw));
+  document.getElementById('curPwInput').value = '';
+  document.getElementById('newPwInput').value = '';
+  document.getElementById('confirmPwInput').value = '';
+  document.getElementById('pwStrengthFill').style.width = '0';
+  document.getElementById('pwStrengthLabel').textContent = 'পাসওয়ার্ড লিখুন';
+  showAlert('✅ পাসওয়ার্ড সফলভাবে পরিবর্তন হয়েছে!', 'success');
+}
+
+function checkPwStrength(pw) {
+  const fill = document.getElementById('pwStrengthFill');
+  const label = document.getElementById('pwStrengthLabel');
+  let strength = 0;
+  if (pw.length >= 6) strength++;
+  if (pw.length >= 10) strength++;
+  if (/[A-Z]/.test(pw) || /[a-z]/.test(pw)) strength++;
+  if (/[0-9]/.test(pw)) strength++;
+  if (/[^A-Za-z0-9]/.test(pw)) strength++;
+  const levels = [
+    { w:'0%', color:'#eee', text:'পাসওয়ার্ড লিখুন' },
+    { w:'25%', color:'var(--red)', text:'খুব দুর্বল 🔴' },
+    { w:'50%', color:'var(--orange)', text:'দুর্বল 🟠' },
+    { w:'75%', color:'#f1c40f', text:'মাঝারি 🟡' },
+    { w:'90%', color:'var(--green)', text:'শক্তিশালী 🟢' },
+    { w:'100%', color:'#1a6b3a', text:'অত্যন্ত শক্তিশালী 💪' },
+  ];
+  const l = levels[Math.min(strength, 5)];
+  fill.style.width = l.w;
+  fill.style.background = l.color;
+  label.textContent = l.text;
+  label.style.color = l.color;
+}
+
+function togglePwVis(inputId, btn) {
+  const inp = document.getElementById(inputId);
+  if (inp.type === 'password') { inp.type = 'text'; btn.textContent = '🙈'; }
+  else { inp.type = 'password'; btn.textContent = '👁️'; }
+}
+
+// add shake keyframe dynamically
+const shakeStyle = document.createElement('style');
+shakeStyle.textContent = `@keyframes shake {
+  0%,100%{transform:translateX(0)}
+  20%{transform:translateX(-10px)}
+  40%{transform:translateX(10px)}
+  60%{transform:translateX(-8px)}
+  80%{transform:translateX(8px)}
+}`;
+document.head.appendChild(shakeStyle);
+
+// ========== INIT ==========
+function initApp() {
+  updateTopbarName();
+  // apply saved settings
+  if (db.settings) {
+    if (db.settings.theme) changeTheme(db.settings.theme.primary, db.settings.theme.dark);
+    if (db.settings.fontSize) document.body.style.fontSize = db.settings.fontSize + 'px';
+  }
+  const today = new Date().toISOString().split('T')[0];
+  ['fDate','iDate'].forEach(id => { const el = document.getElementById(id); if(el) el.value=today; });
+  renderDashboard();
+}
+
+// ========== STARTUP ==========
+(function startup() {
+  if (isSessionValid()) {
+    document.getElementById('loginScreen').classList.remove('show');
+    document.getElementById('appWrapper').style.display = 'block';
+    initApp();
+  }
+  // auto-focus login input
+  setTimeout(() => {
+    const inp = document.getElementById('loginPwInput');
+    if (inp) inp.focus();
+  }, 200);
+})();
+</script>
+</body>
+</html>
